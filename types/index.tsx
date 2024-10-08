@@ -17,8 +17,6 @@ export interface ShortAnswerQuestion extends QuestionBase {
 
 export interface RatingScaleQuestion extends QuestionBase {
   type: 'RATING_SCALE';
-  scaleMin: number;
-  scaleMax: number;
 }
 
 export type Question =
@@ -41,5 +39,6 @@ export interface SurveyResponse {
   id: number;
   surveyId: number;
   patientId: number;
+  patientName: string;
   answers: { [questionId: string]: string };
 }

@@ -14,6 +14,12 @@ export default StyleSheet.create({
     color: colors.text,
     marginBottom: 20,
   },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 10,
+  },
   input: {
     borderWidth: 1,
     borderColor: colors.placeholder,
@@ -21,5 +27,17 @@ export default StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     color: colors.text,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: colors.primary,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

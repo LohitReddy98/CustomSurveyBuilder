@@ -1,10 +1,13 @@
 // api/surveys.ts
 import { Survey, SurveyResponse } from '../types';
-import { mockSurveys } from '../data/mockSurveys';
+import { mockSurveys, } from '../data/mockSurveys';
+import { mockSurveyAssignments } from '@/data/mockSurveyAssignments';
+import { mockSurveyResponses } from '@/data/mockSurveyResponses';
+
 
 let surveys: Survey[] = [...mockSurveys];
-let surveyAssignments: { surveyId: number; patientId: number }[] = [];
-let surveyResponses: SurveyResponse[] = [];
+let surveyAssignments: { surveyId: number; patientId: number }[] = [...mockSurveyAssignments]; // Initialize with mock assignments
+let surveyResponses: SurveyResponse[] = [...mockSurveyResponses]; // Initialize with mock survey responses
 
 export const getSurveys = (): Promise<Survey[]> => {
   return new Promise((resolve) => {
@@ -102,7 +105,7 @@ export const getSurveyResponses = (surveyId: number): Promise<any[]> => {
         .filter((response) => response.surveyId === surveyId)
         .map((response) => ({
           id: response.id,
-          patientName: `Patient ${response.patientId}`,
+          patientName:response.patientName + " (" + response.patientId+")",
           answers: Object.keys(response.answers).map((questionId) => ({
             questionId: Number(questionId),
             answer: response.answers[questionId],
