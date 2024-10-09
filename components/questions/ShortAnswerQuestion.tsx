@@ -7,12 +7,12 @@ import TextInputComponent from '../common/TextInput';
 
 interface ShortAnswerQuestionProps {
   questionIndex: number;
-  isEditMode: boolean; // New prop to control edit/view mode
+  isEditMode?: boolean; // New prop to control edit/view mode
 }
 
 const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   questionIndex,
-  isEditMode,
+  isEditMode=true,
 }) => {
   const { values, setFieldValue } = useFormikContext<any>();
 
@@ -22,12 +22,12 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
       {isEditMode ? (
         <TextInputComponent
           placeholder="Question Text"
-          value={values.questions[questionIndex].text}
-          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.text`, text)}
+          value={values.questions[questionIndex].questionText}
+          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.questionText`, text)}
           style={styles.textInput}
         />
       ) : (
-        <Text style={styles.questionText}>{values.questions[questionIndex].text}</Text>
+        <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
       {/* Show a placeholder for the short answer when not in edit mode */}

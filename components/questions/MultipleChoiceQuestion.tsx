@@ -12,13 +12,13 @@ interface MultipleChoiceQuestionProps {
     remove: (index: number) => void;
     replace: (index: number, value: any) => void;
   };
-  isEditMode: boolean; // Add prop to control edit/view mode
+  isEditMode?: boolean; // Add prop to control edit/view mode
 }
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   questionIndex,
   arrayHelpers,
-  isEditMode,
+  isEditMode=true,
 }) => {
   
   const { values, setFieldValue } = useFormikContext<{ questions: any[] }>();
@@ -51,12 +51,12 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
       {isEditMode ? (
         <TextInputComponent
           placeholder="Question Text"
-          value={values.questions[questionIndex].text}
-          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.text`, text)}
+          value={values.questions[questionIndex].questionText}
+          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.questionText`, text)}
           style={styles.textInput}
         />
       ) : (
-        <Text style={styles.questionText}>{values.questions[questionIndex].text}</Text>
+        <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
       {/* Options List */}

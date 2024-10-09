@@ -1,39 +1,40 @@
 // app/patient/surveys/index.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import globalStyles from '../../../styles/globalStyles';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Survey } from '../../../types';
-import { getAssignedSurveys } from '../../../api/surveys';
+import { useSurveyAssignments } from '../../../api/hooks/useSurveyAssignments'; // Import the hook
 
 export default function PatientSurveysScreen() {
   const router = useRouter();
-  const { patientId } = useLocalSearchParams<{ patientId?: string }>();
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { fetchAssignedSurveysForPatient, assignedSurveys, loading, error } = useSurveyAssignments(); // Use the hook
 
   useEffect(() => {
-    fetchSurveys();
-  }, [patientId]);
+      fetchAssignedSurveysForPatient(); // Fetch surveys assigned to the currently logged-in patient
+    
+  }, []);
+  useEffect(() => {
+    console.log(assignedSurveys);
+  }
+  , [assignedSurveys]);
 
-  const fetchSurveys = async () => {
-    if (patientId) {
-      setLoading(true);
-      const data = await getAssignedSurveys(Number(patientId));
-      setSurveys(data);
-      setLoading(false);
-    }
-  };
-
-
-  const handleSurveyPress = (survey: Survey) => {
-    router.push(`/patient/survey-view/${survey.id}?patientId=${patientId}`);
+  const handleSurveyPress = (survey: any) => {
+    router.push(`/patient/survey-view/${survey.surveyId}`); 
   };
 
   if (loading) {
     return (
       <View style={globalStyles.container}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={globalStyles.container}>
+        <Text>Error: {error}</Text>
       </View>
     );
   }
@@ -42,8 +43,8 @@ export default function PatientSurveysScreen() {
     <View style={globalStyles.container}>
       <Text style={globalStyles.title}>Assigned Surveys</Text>
       <FlatList
-        data={surveys}
-        keyExtractor={(item) => item.id.toString()}
+        data={assignedSurveys}
+        keyExtractor={(item) => item.surveyId ? item.surveyId.toString() : Math.random().toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handleSurveyPress(item)}

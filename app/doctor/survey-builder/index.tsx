@@ -2,27 +2,25 @@
 import React, { useEffect, useState } from 'react';
 import { View, Button, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { Formik, FieldArray } from 'formik';
-import { surveyValidationSchema } from '../../../utils/validationSchema';
 import TextInputComponent from '../../../components/common/TextInput';
 import MultipleChoiceQuestion from '../../../components/questions/MultipleChoiceQuestion';
 import ShortAnswerQuestion from '../../../components/questions/ShortAnswerQuestion';
 import RatingScaleQuestion from '@/components/questions/RatingScaleQuestion';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Survey } from '../../../types';
-import { getSurveyById, createSurvey, updateSurvey } from '../../../api/surveys';
 import { generateUniqueId } from '@/utils/helper';
 import globalStyles from '@/styles/globalStyles';
+import { useSurveys } from '@/api/hooks/useSurvey';
 
 export default function SurveyBuilderScreen() {
   const router = useRouter();
   const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
+  const { createSurvey, getSurveyById, currentSurvey, setCurrentSurvey, loading } = useSurveys(); // Destructure needed values and methods from the hook
   const [initialValues, setInitialValues] = useState<Survey | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isEditMode, setIsEditMode] = useState(true); // Added to control edit mode
+  const [isEditMode, setIsEditMode] = useState(true); // Control edit mode
 
   useEffect(() => {
     if (surveyId) {
-       // setIsEditMode(false); // If we're editing a survey, set edit mode to false
       fetchSurvey(Number(surveyId));
     } else {
       setInitialValues({
@@ -30,12 +28,10 @@ export default function SurveyBuilderScreen() {
         title: '',
         questions: [],
       });
-      setLoading(false);
     }
   }, [surveyId]);
 
   const fetchSurvey = async (id: number) => {
-    setLoading(true);
     const survey = await getSurveyById(id);
     if (survey) {
       setInitialValues(survey);
@@ -46,20 +42,19 @@ export default function SurveyBuilderScreen() {
         questions: [],
       });
     }
-    setLoading(false);
   };
-
+  //useeffect to debug formik values
+ 
   const handleSubmit = async (values: Survey) => {
-    setLoading(true);
     try {
       if (surveyId) {
-        await updateSurvey(values);
+        setCurrentSurvey(values); // Directly update the current survey state in the hook
       } else {
         await createSurvey(values);
       }
       router.back();
     } finally {
-      setLoading(false);
+      // Handle any additional logic post-submit if needed
     }
   };
 
@@ -74,11 +69,12 @@ export default function SurveyBuilderScreen() {
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={surveyValidationSchema} // Uncomment to use validation schema
       onSubmit={handleSubmit}
-      enableReinitialize // This prop will reinitialize the form when initialValues change
+      enableReinitialize // Reinitialize form when initialValues change
     >
-      {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+      {({ handleSubmit, values, errors, touched, setFieldValue }) => {
+
+        return (
         <ScrollView contentContainerStyle={globalStyles.container}>
           <Text style={globalStyles.title}>Survey Builder</Text>
           {/* Survey Title Input */}
@@ -101,18 +97,18 @@ export default function SurveyBuilderScreen() {
                 {values.questions.map((question, index) => (
                   <View key={`question-${index}`} style={{ marginBottom: 20 }}>
                     {/* Render the appropriate question type component with isEditMode prop */}
-                    {question.type === 'MULTIPLE_CHOICE' ? (
+                    {question.questionType === 'MULTIPLE_CHOICE' ? (
                       <MultipleChoiceQuestion
                         questionIndex={index}
                         arrayHelpers={arrayHelpers}
                         isEditMode={isEditMode} // Pass isEditMode prop
                       />
-                    ) : question.type === 'SHORT_ANSWER' ? (
+                    ) : question.questionType === 'SHORT_ANSWER' ? (
                       <ShortAnswerQuestion
                         questionIndex={index}
                         isEditMode={isEditMode} // Pass isEditMode prop
                       />
-                    ) : question.type === 'RATING_SCALE' ? (
+                    ) : question.questionType === 'RATING_SCALE' ? (
                       <RatingScaleQuestion
                         key={`question-${index}`}
                         questionIndex={index}
@@ -139,8 +135,8 @@ export default function SurveyBuilderScreen() {
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
-                          type: 'MULTIPLE_CHOICE',
-                          text: '',
+                          questionType: 'MULTIPLE_CHOICE',
+                          questionText: '',
                           options: [],
                           isRequired: false,
                         })
@@ -151,8 +147,8 @@ export default function SurveyBuilderScreen() {
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
-                          type: 'SHORT_ANSWER',
-                          text: '',
+                          questionType: 'SHORT_ANSWER',
+                          questionText: '',
                           isRequired: false,
                         })
                       }
@@ -162,8 +158,8 @@ export default function SurveyBuilderScreen() {
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
-                          type: 'RATING_SCALE',
-                          text: '',
+                          questionType: 'RATING_SCALE',
+                          questionText: '',
                           isRequired: false,
                         })
                       }
@@ -177,7 +173,7 @@ export default function SurveyBuilderScreen() {
           {/* Save Survey Button */}
           <Button title="Save Survey" onPress={() => handleSubmit()} />
         </ScrollView>
-      )}
+      )}}
     </Formik>
   );
 }

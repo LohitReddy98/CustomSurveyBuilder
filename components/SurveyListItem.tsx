@@ -11,7 +11,6 @@ import { Survey } from '../types';
 
 interface SurveyListItemProps {
   survey: Survey;
-  onEdit: () => void;
   onDelete: () => void;
   onAssign: () => void;
   onViewResponses: () => void;
@@ -19,7 +18,6 @@ interface SurveyListItemProps {
 
 const SurveyListItem: React.FC<SurveyListItemProps> = ({
   survey,
-  onEdit,
   onDelete,
   onAssign,
   onViewResponses,
@@ -28,9 +26,6 @@ const SurveyListItem: React.FC<SurveyListItemProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>{survey.title}</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={onEdit} style={styles.button}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
         <TouchableOpacity onPress={onDelete} style={styles.button}>
           <Text style={styles.buttonText}>Delete</Text>
         </TouchableOpacity>

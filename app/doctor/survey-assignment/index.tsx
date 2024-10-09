@@ -1,47 +1,27 @@
 // app/survey-assignment/index.tsx
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import colors from '../../../styles/colors';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Survey, Patient } from '../../../types';
-import { getPatients } from '../../../api/patients';
-import { assignSurveyToPatient, getSurveyById } from '@/api/surveys';
 import globalStyles from '@/styles/globalStyles';
+import { useSurveyAssignments } from '@/api/hooks/useSurveyAssignments';
 
 export default function SurveyAssignmentScreen() {
-  const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
+  const { surveyId } = useLocalSearchParams<{ surveyId?: string }>(); // Get surveyId from params
+  const { fetchAllPatientsWithSurveyStatus, assignSurveyToPatient, allPatients, loading, error } = useSurveyAssignments(); // Use hook
   const router = useRouter();
-  const [survey, setSurvey] = useState<Survey | null>(null);
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchData();
+    if (surveyId) {
+      fetchAllPatientsWithSurveyStatus(Number(surveyId)); // Fetch patients when surveyId is available
+    }
   }, [surveyId]);
 
-  const fetchData = async () => {
-    setLoading(true);
-    const [surveyData, patientData] = await Promise.all([
-      getSurveyById(Number(surveyId)),
-      getPatients(),
-    ]);
-    setSurvey(surveyData || null);
-    setPatients(patientData);
-    setLoading(false);
-  };
-
-  const handleAssign = async (patient: Patient) => {
-    if (survey) {
-      await assignSurveyToPatient(survey.id, patient.id);
-      alert(`Survey "${survey.title}" assigned to ${patient.name}`);
-      router.back();
+  // Function to handle assigning the survey to a patient
+  const handleAssign = async (patientId: number) => {
+    if (surveyId) {
+      await assignSurveyToPatient(Number(surveyId), patientId);
+      await fetchAllPatientsWithSurveyStatus(Number(surveyId)); // Refresh the patient list after assignment
     }
   };
 
@@ -53,29 +33,35 @@ export default function SurveyAssignmentScreen() {
     );
   }
 
-  if (!survey) {
+  if (error) {
     return (
       <View style={globalStyles.container}>
-        <Text>Survey not found</Text>
+        <Text>Error: {error}</Text>
       </View>
     );
   }
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Assign Survey: {survey.title}</Text>
+      <Text style={globalStyles.title}>Patients for Survey: {surveyId}</Text>
       <FlatList
-        data={patients}
-        keyExtractor={(item) => item.id.toString()}
+        data={allPatients}
+        keyExtractor={(item) => item.patientId.toString()}
         renderItem={({ item }) => (
           <View style={styles.patientItem}>
-            <Text style={styles.patientName}>{item.name}</Text>
-            <TouchableOpacity
-              onPress={() => handleAssign(item)}
-              style={styles.assignButton}
-            >
-              <Text style={styles.assignButtonText}>Assign Survey</Text>
-            </TouchableOpacity>
+            <Text style={styles.patientName}>
+              {item.firstName} {item.lastName}
+            </Text>
+            {item.assigned ? (
+              <Text style={[styles.statusText, styles.assignedText]}>Assigned</Text>
+            ) : (
+              <TouchableOpacity
+                onPress={() => handleAssign(item.patientId)}
+                style={styles.assignButton}
+              >
+                <Text style={styles.assignButtonText}>Assign Survey</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       />
@@ -95,6 +81,12 @@ const styles = StyleSheet.create({
   patientName: {
     fontSize: 16,
     color: colors.text,
+  },
+  statusText: {
+    fontSize: 14,
+  },
+  assignedText: {
+    color: 'green',
   },
   assignButton: {
     backgroundColor: colors.accent,

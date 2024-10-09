@@ -7,12 +7,12 @@ import TextInputComponent from '../common/TextInput';
 
 interface RatingScaleQuestionProps {
   questionIndex: number;
-  isEditMode: boolean; // New prop to determine if we're in edit mode
+  isEditMode?: boolean; // New prop to determine if we're in edit mode
 }
 
 const RATING_OPTIONS = [1, 2, 3, 4, 5]; // Define the rating scale options
 
-const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex, isEditMode }) => {
+const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex, isEditMode=true }) => {
   const { values, setFieldValue } = useFormikContext<any>();
 
   const handleRatingSelect = (rating: number) => {
@@ -25,13 +25,13 @@ const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex
         // Editable Text Input for Question Text in Edit Mode
         <TextInputComponent
           placeholder="Enter your question here"
-          value={values.questions[questionIndex].text}
-          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.text`, text)}
+          value={values.questions[questionIndex].questionText}
+          onChangeText={(text) => setFieldValue(`questions.${questionIndex}.questionText`, text)}
           style={styles.textInput}
         />
       ) : (
         // Display Question Text when filling out the survey
-        <Text style={styles.questionText}>{values.questions[questionIndex].text}</Text>
+        <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
       {/* Render rating options only in view mode */}
