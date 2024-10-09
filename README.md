@@ -25,3 +25,5 @@ In the output, you'll find options to open the app in a
 
 
 
+## User flow 
+![Blank diagram (1)](https://github.com/user-attachments/assets/d17ec227-8c87-486f-b9b0-f90be4397c94)
