@@ -1,4 +1,4 @@
-// app/survey-builder/index.tsx
+// app/doctor/survey-builder/index.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Button, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { Formik, FieldArray } from 'formik';

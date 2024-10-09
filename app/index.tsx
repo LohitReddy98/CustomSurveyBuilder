@@ -1,4 +1,4 @@
-// src/pages/LoginPage.tsx
+// app/index.tsx
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, ActivityIndicator } from 'react-native-paper';
@@ -36,7 +36,7 @@ const LoginPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Login (Patient or Doctor)</Text>
       <TextInput
         label="Email or Username"
         value={emailOrUsername}

@@ -1,4 +1,4 @@
-// app/survey-assignment/index.tsx
+// app/doctor/survey-assignment/index.tsx
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import colors from '../../../styles/colors';
