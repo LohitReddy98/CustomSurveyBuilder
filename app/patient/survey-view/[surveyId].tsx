@@ -6,6 +6,7 @@ import globalStyles from '../../../styles/globalStyles';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSurveys } from '@/api/hooks/useSurvey';
 import { useSurveyResponses } from '@/api/hooks/useSurveyResponses';
+import { showAlert } from '@/utils/helper';
 
 export default function SurveyViewScreen() {
   const router = useRouter();
@@ -15,16 +16,12 @@ export default function SurveyViewScreen() {
   const { submitResponse, loading: submitting, error } = useSurveyResponses(); 
 
   useEffect(() => {
-    
     if (surveyId) {
       getSurveyById(Number(surveyId));
     }
-
-    
     return () => setCurrentSurvey(null);
   }, [surveyId]);
 
-  
   const validationSchema = Yup.object().shape(
     currentSurvey?.questions.reduce((schema, question) => {
       if (question.isRequired) {
@@ -40,10 +37,10 @@ export default function SurveyViewScreen() {
       await submitResponse(Number(surveyId), {
         response: values, 
       });
-      alert('Survey submitted successfully!');
+      showAlert('Success', 'Survey submitted successfully!');
       router.back(); 
     } catch (err) {
-      alert('Failed to submit survey: ' + (error || 'Unknown error occurred'));
+      showAlert('Failed to submit survey', error || 'Unknown error occurred');
     }
   };
 
@@ -55,7 +52,6 @@ export default function SurveyViewScreen() {
     );
   }
 
-  
   const initialValues = currentSurvey.questions.reduce((acc: any, question) => {
     acc[question.questionId] = '';
     return acc;
@@ -73,7 +69,6 @@ export default function SurveyViewScreen() {
         <View style={globalStyles.container}>
           <Text style={globalStyles.title}>{currentSurvey.title}</Text>
 
-          {}
           {currentSurvey.questions.map((question) => (
             <View key={question.questionId} style={styles.questionContainer}>
               <Text style={styles.questionText}>
@@ -81,7 +76,6 @@ export default function SurveyViewScreen() {
                 {question.isRequired && <Text style={styles.requiredMark}> *</Text>}
               </Text>
 
-              {}
               {question.questionType === 'SHORT_ANSWER' && (
                 <>
                   <TextInput
@@ -96,7 +90,6 @@ export default function SurveyViewScreen() {
                 </>
               )}
 
-              {}
               {question.questionType === 'MULTIPLE_CHOICE' && (
                 <View>
                   {question.options?.map((option, idx) => (
@@ -119,7 +112,6 @@ export default function SurveyViewScreen() {
                 </View>
               )}
 
-              {}
               {question.questionType === 'RATING_SCALE' && (
                 <View style={styles.ratingContainer}>
                   {[1, 2, 3, 4, 5].map((rating) => (
@@ -144,9 +136,8 @@ export default function SurveyViewScreen() {
             </View>
           ))}
 
-          {}
           <Button title="Submit" onPress={handleSubmit} disabled={submitting} />
-          {submitting && <ActivityIndicator size="small" />} {}
+          {submitting && <ActivityIndicator size="small" />} 
         </View>
       )}
     </Formik>
@@ -206,4 +197,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0f7fa',
   },
 });
-

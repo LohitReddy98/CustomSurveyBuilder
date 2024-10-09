@@ -5,6 +5,7 @@ import { TextInput, Button, Text, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router'; 
 import { useAuth } from '@/api/hooks/useAuth';
 import { setToken } from '@/utils/tokenService';
+import { showAlert } from '@/utils/helper';
 
 const LoginPage = () => {
   const [emailOrUsername, setEmailOrUsername] = useState('');
@@ -30,7 +31,7 @@ const LoginPage = () => {
         }
       }
     } catch (err) {
-      Alert.alert('Login Failed', error || 'Login failed. Please try again.');
+      showAlert('Login Failed', error || 'Login failed. Please try again.');
     }
   };
 

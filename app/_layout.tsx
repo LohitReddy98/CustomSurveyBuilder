@@ -8,15 +8,10 @@ import Footer from '@/components/Footer';
 export default function RootLayout() {
   return (
     <View style={styles.container}>
-      {}
       <Header />
-
-      {}
       <View style={styles.content}>
         <Slot />
       </View>
-
-      {}
       <View style={styles.footer}>
         <Footer />
       </View>

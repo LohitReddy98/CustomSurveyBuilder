@@ -5,6 +5,7 @@ import colors from '../../../styles/colors';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import globalStyles from '@/styles/globalStyles';
 import { useSurveyAssignments } from '@/api/hooks/useSurveyAssignments';
+import { showAlert } from '@/utils/helper';
 
 export default function SurveyAssignmentScreen() {
   const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
@@ -29,6 +30,7 @@ export default function SurveyAssignmentScreen() {
   const handleAssign = async (patientId: number) => {
     if (surveyId) {
       await assignSurveyToPatient(Number(surveyId), patientId);
+      showAlert('Success', 'Survey assigned successfully!');
       await fetchAllPatientsWithSurveyStatus(Number(surveyId));
     }
   };

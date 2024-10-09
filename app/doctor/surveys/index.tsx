@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { useSurveys } from '@/api/hooks/useSurvey';
 import globalStyles from '@/styles/globalStyles';
 import SurveyListItem from '@/components/SurveyListItem';
+import { showAlert } from '@/utils/helper';
 
 export default function SurveysScreen() {
   const router = useRouter();
@@ -32,9 +33,9 @@ export default function SurveysScreen() {
   const handleDeleteSurvey = async (id: number) => {
     try {
       await deleteSurvey(id); 
-      Alert.alert('Success', 'Survey deleted successfully!');
+      showAlert('Success', 'Survey deleted successfully!');
     } catch (err) {
-      Alert.alert('Error', 'Failed to delete survey.');
+      showAlert('Error', 'Failed to delete survey.');
     }
   };
 

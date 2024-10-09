@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, ScrollView, StyleSheet, Alert } from 'react-native';
 import { Formik, FieldArray } from 'formik';
 import { Button, TextInput, Text, Divider, Checkbox } from 'react-native-paper';
 import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import ShortAnswerQuestion from '../../../components/questions/ShortAnswerQuesti
 import RatingScaleQuestion from '@/components/questions/RatingScaleQuestion';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Survey } from '../../../types';
-import { generateUniqueId } from '@/utils/helper';
+import { generateUniqueId, showAlert } from '@/utils/helper';
 import globalStyles from '@/styles/globalStyles';
 import { useSurveys } from '@/api/hooks/useSurvey';
 
@@ -50,6 +50,7 @@ export default function SurveyBuilderScreen() {
         setCurrentSurvey(values);
       } else {
         await createSurvey(values);
+        showAlert('Success', 'Survey created successfully!');
       }
       router.back();
     } finally {
@@ -65,7 +66,6 @@ export default function SurveyBuilderScreen() {
     );
   }
 
-  
   const getQuestionSchema = (questionType:any) => {
     switch (questionType) {
       case 'MULTIPLE_CHOICE':
@@ -93,7 +93,6 @@ export default function SurveyBuilderScreen() {
     }
   };
   
-  
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Survey title is required'),
     questions: Yup.array().of(
@@ -113,7 +112,7 @@ export default function SurveyBuilderScreen() {
       validateOnBlur={false} 
     >
       {({ handleSubmit, values, errors, touched, setFieldValue }) => (
-        <ScrollView contentContainerStyle={[globalStyles.container, styles.container]}>
+        <ScrollView style={{padding:10}}>
           <Text style={styles.title}>Survey Builder</Text>
 
           {isEditMode && (
@@ -135,7 +134,6 @@ export default function SurveyBuilderScreen() {
               <View>
                 {values.questions.map((question, index) => (
                   <View key={`question-${index}`} style={styles.questionContainer}>
-                    {}
                     {question.questionType === 'MULTIPLE_CHOICE' ? (
                       <MultipleChoiceQuestion
                         questionIndex={index}
@@ -158,12 +156,10 @@ export default function SurveyBuilderScreen() {
                       <Text style={styles.errorText}>{errors.questions[index].questionText}</Text>
                     )}
 
-                    {}
                     {question.questionType === 'MULTIPLE_CHOICE' && errors.questions?.[index]?.options && (
                       <Text style={styles.errorText}>{errors.questions[index].options}</Text>
                     )}
 
-                    {}
                     {isEditMode && (
                       <View style={styles.requiredCheckboxContainer}>
                         <Checkbox
@@ -253,10 +249,11 @@ export default function SurveyBuilderScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     paddingHorizontal: 20,
     paddingBottom: 40,
-  },
+    flex: 1,
+    },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -296,4 +293,3 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-

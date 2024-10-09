@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import colors from '../styles/colors';
 import { Survey } from '../types';
@@ -22,14 +22,15 @@ const SurveyListItem: React.FC<SurveyListItemProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>{survey.title}</Text>
       <View style={styles.buttonsContainer}>
-        <Button mode="outlined" onPress={onDelete} style={styles.button}>
+        <Button mode="outlined" onPress={onDelete} style={styles.button} labelStyle={{fontSize:Platform.OS === 'web'?14:10 ,padding:0}}>
           Delete
         </Button>
-        <Button mode="outlined" onPress={onAssign} style={styles.button}>
+        <Button mode="outlined" onPress={onAssign} style={styles.button} labelStyle={{fontSize:Platform.OS === 'web'?14:10 ,padding:0}}>
           Assign
         </Button>
-        <Button mode="outlined" onPress={onViewResponses} style={styles.button}>
-          View Responses
+        <Button  mode="outlined" onPress={onViewResponses} style={styles.button} labelStyle={{fontSize:Platform.OS === 'web'?14:10 ,padding:0}}>
+          
+           Results
         </Button>
       </View>
     </View>
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 5,
     flex: 1,
+    maxWidth: '30%',
     marginHorizontal: 5,
   },
 });
