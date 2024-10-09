@@ -1,4 +1,4 @@
-// styles/colors.ts
+
 export default {
     primary: '#6200EE',
     accent: '#03DAC6',

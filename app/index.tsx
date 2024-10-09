@@ -1,8 +1,8 @@
-// app/index.tsx
+
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, ActivityIndicator } from 'react-native-paper';
-import { useRouter } from 'expo-router'; // Use useRouter from expo-router
+import { useRouter } from 'expo-router'; 
 import { useAuth } from '@/api/hooks/useAuth';
 import { setToken } from '@/utils/tokenService';
 
@@ -10,8 +10,8 @@ const LoginPage = () => {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const { login, loading, error } = useAuth(); // Destructure login, loading, and error from useAuth hook
-  const router = useRouter(); // Get the router instance from expo-router
+  const { login, loading, error } = useAuth(); 
+  const router = useRouter(); 
 
   const handleLogin = async () => {
     try {
@@ -19,14 +19,14 @@ const LoginPage = () => {
       if (data) {
         const { token, role } = data;
 
-        // Save token to local storage using AsyncStorage
+        
         await setToken(token);
 
-        // Redirect based on role using router.push()
+        
         if (role === 'doctor') {
-          router.push('/doctor'); // Navigate to doctor screen
+          router.push('/doctor'); 
         } else if (role === 'patient') {
-          router.push('/patient'); // Navigate to patient screen
+          router.push('/patient'); 
         }
       }
     } catch (err) {

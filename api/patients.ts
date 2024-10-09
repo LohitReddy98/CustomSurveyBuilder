@@ -1,4 +1,4 @@
-// api/patients.ts
+
 import { Patient } from '../types';
 import { mockPatients } from '../data/mockPatients';
 

@@ -1,4 +1,4 @@
-// src/hooks/useSurveyResponses.ts
+
 import { useState } from 'react';
 import api from '../api';
 import { SurveyResponse } from '@/types';

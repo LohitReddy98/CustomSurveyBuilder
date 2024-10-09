@@ -1,4 +1,4 @@
-// styles/fonts.ts
+
 export default {
     regular: 'Roboto-Regular',
     medium: 'Roboto-Medium',

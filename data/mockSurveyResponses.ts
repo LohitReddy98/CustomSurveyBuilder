@@ -1,23 +1,23 @@
-// data/mockSurveyResponses.ts
+
 import { SurveyResponse } from '../types';
 
 export const mockSurveyResponses: SurveyResponse[] = [
   {
     id: 1,
-    surveyId: 1, // Refers to the 'Daily Health Check' survey
+    surveyId: 1, 
     patientId: 1,
-    patientName: 'John Doe', // Adding patientName field
+    patientName: 'John Doe', 
     answers: {
-      '1': 'Good', // Answer to 'How are you feeling today?'
-      '2': 'I feel great today!', // Answer to 'Any additional notes?'
-      '3': '3', // Rating answer to 'Rate your pain level'
+      '1': 'Good', 
+      '2': 'I feel great today!', 
+      '3': '3', 
     },
   },
   {
     id: 2,
     surveyId: 1,
     patientId: 2,
-    patientName: 'Jane Smith', // Adding patientName field
+    patientName: 'Jane Smith', 
     answers: {
       '1': 'Okay',
       '2': '',
@@ -26,9 +26,9 @@ export const mockSurveyResponses: SurveyResponse[] = [
   },
   {
     id: 3,
-    surveyId: 2, // Refers to the 'Employee Feedback Survey'
+    surveyId: 2, 
     patientId: 1,
-    patientName: 'John Doe', // Adding patientName field
+    patientName: 'John Doe', 
     answers: {
       '1': 'I like the flexible work hours.',
       '2': 'Health Insurance',
@@ -38,11 +38,11 @@ export const mockSurveyResponses: SurveyResponse[] = [
   },
   {
     id: 4,
-    surveyId: 3, // Refers to the 'Patient Satisfaction Survey'
+    surveyId: 3, 
     patientId: 2,
-    patientName: 'Jane Smith', // Adding patientName field
+    patientName: 'Jane Smith', 
     answers: {
-      '1': '4', // Rating answer to 'How would you rate your overall experience with our facility?'
+      '1': '4', 
       '2': 'Yes',
       '3': 'Everything was great, but the wait time was a bit long.',
       '4': '30-60 minutes',

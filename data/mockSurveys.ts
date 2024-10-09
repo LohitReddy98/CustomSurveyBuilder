@@ -1,4 +1,4 @@
-// src/data/mockSurveys.ts
+
 
 import { Survey } from '@/types';
 
@@ -8,14 +8,14 @@ export const mockSurveys: Survey[] = [
     title: 'Daily Health Check',
     questions: [
       {
-        id: 1, // Start from 1
+        id: 1, 
         type: 'MULTIPLE_CHOICE',
         text: 'How are you feeling today?',
         options: ['Good', 'Okay', 'Bad'],
         isRequired: true,
       },
       {
-        id: 2, // Increment within the same survey
+        id: 2, 
         type: 'SHORT_ANSWER',
         text: 'Any additional notes?',
         isRequired: false,
@@ -33,7 +33,7 @@ export const mockSurveys: Survey[] = [
     title: 'Employee Feedback Survey',
     questions: [
       {
-        id: 1, // Start from 1 again for a new survey
+        id: 1, 
         type: 'SHORT_ANSWER',
         text: 'What do you like about your job?',
         isRequired: true,
@@ -65,7 +65,7 @@ export const mockSurveys: Survey[] = [
     title: 'Patient Satisfaction Survey',
     questions: [
       {
-        id: 1, // Start from 1 for this survey
+        id: 1, 
         type: 'RATING_SCALE',
         text: 'How would you rate your overall experience with our facility?',
         isRequired: true,
@@ -97,7 +97,7 @@ export const mockSurveys: Survey[] = [
     title: 'Product Feedback Survey',
     questions: [
       {
-        id: 1, // Start from 1 for this survey
+        id: 1, 
         type: 'SHORT_ANSWER',
         text: 'What product did you purchase?',
         isRequired: true,
@@ -134,7 +134,7 @@ export const mockSurveys: Survey[] = [
     title: 'Course Evaluation Survey',
     questions: [
       {
-        id: 1, // Start from 1 for this survey
+        id: 1, 
         type: 'RATING_SCALE',
         text: 'Rate the quality of the course materials (1-5)',
         isRequired: true,
@@ -172,7 +172,7 @@ export const mockSurveys: Survey[] = [
     title: 'Fitness Center Feedback Survey',
     questions: [
       {
-        id: 1, // Start from 1 for this survey
+        id: 1, 
         type: 'MULTIPLE_CHOICE',
         text: 'Which facilities do you use the most?',
         options: ['Gym', 'Pool', 'Group Classes', 'Spa'],
@@ -210,7 +210,7 @@ export const mockSurveys: Survey[] = [
     title: 'Event Feedback Survey',
     questions: [
       {
-        id: 1, // Start from 1 for this survey
+        id: 1, 
         type: 'RATING_SCALE',
         text: 'Rate the overall experience of the event',
         isRequired: true,

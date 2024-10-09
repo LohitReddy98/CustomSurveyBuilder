@@ -1,4 +1,4 @@
-// context/SurveyContext.tsx
+
 import React, { createContext, useState, ReactNode } from 'react';
 import { mockSurveys } from '../data/mockSurveys';
 import { Survey } from '../types';

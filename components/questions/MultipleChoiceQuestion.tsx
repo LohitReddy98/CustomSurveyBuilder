@@ -1,4 +1,4 @@
-// components/questions/MultipleChoiceQuestion.tsx
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { FieldArray, useFormikContext } from 'formik';
@@ -12,7 +12,7 @@ interface MultipleChoiceQuestionProps {
     remove: (index: number) => void;
     replace: (index: number, value: any) => void;
   };
-  isEditMode?: boolean; // Add prop to control edit/view mode
+  isEditMode?: boolean; 
 }
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
@@ -23,9 +23,9 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   
   const { values, setFieldValue } = useFormikContext<{ questions: any[] }>();
 
-  // Handle adding a new option
+  
   const handleAddOption = () => {
-    const newOption = ''; // New empty option
+    const newOption = ''; 
     const options = values.questions[questionIndex].options || [];
     arrayHelpers.replace(questionIndex, {
       ...values.questions[questionIndex],
@@ -33,7 +33,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
     });
   };
 
-  // Handle removing an option
+  
   const handleRemoveOption = (optionIndex: number) => {
     const options = values.questions[questionIndex].options || [];
     if (options.length > 1) {
@@ -47,7 +47,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
 
   return (
     <View style={styles.questionContainer}>
-      {/* Show TextInput for question text only in edit mode */}
+      {}
       {isEditMode ? (
         <TextInputComponent
           placeholder="Question Text"
@@ -59,14 +59,14 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
         <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
-      {/* Options List */}
+      {}
       <FieldArray
         name={`questions.${questionIndex}.options`}
         render={(optionArrayHelpers) => (
           <View>
             {values.questions[questionIndex].options.map((option, optionIndex) => (
               <View key={optionIndex} style={styles.optionContainer}>
-                {/* Option Text Input */}
+                {}
                 {isEditMode ? (
                   <TextInputComponent
                     placeholder={`Option ${optionIndex + 1}`}
@@ -80,13 +80,13 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
                   <Text style={styles.optionText}>{option}</Text>
                 )}
                 
-                {/* Remove Option Button - only visible in edit mode */}
+                {}
                 {isEditMode && (
                   <Button title="Remove" onPress={() => handleRemoveOption(optionIndex)} />
                 )}
               </View>
             ))}
-            {/* Add Option Button - only visible in edit mode */}
+            {}
             {isEditMode && (
               <Button title="Add Option" onPress={handleAddOption} />
             )}

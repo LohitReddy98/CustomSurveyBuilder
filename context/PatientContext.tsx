@@ -1,4 +1,4 @@
-// context/PatientContext.tsx
+
 import React, { createContext, useState, ReactNode } from 'react';
 import { Patient } from '../types';
 import { mockPatients } from '@/data/mockPatients';

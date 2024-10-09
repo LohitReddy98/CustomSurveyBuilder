@@ -5,11 +5,11 @@ import { Patient, Survey } from '@/types';
 export const useSurveyAssignments = () => {
   const [assignedSurveys, setAssignedSurveys] = useState<{surveyId:string,title:string}[]>([]);
   const [assignedPatients, setAssignedPatients] = useState<Patient[]>([]);
-  const [allPatients, setAllPatients] = useState<(Patient & { assigned: boolean })[]>([]); // State for all patients
+  const [allPatients, setAllPatients] = useState<(Patient & { assigned: boolean })[]>([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to assign a survey to a patient
+  
   const assignSurveyToPatient = async (surveyId: number, patientId: number) => {
     try {
       setLoading(true);
@@ -21,7 +21,7 @@ export const useSurveyAssignments = () => {
     }
   };
 
-  // Function to fetch surveys assigned to the currently logged-in patient
+  
   const fetchAssignedSurveysForPatient = async () => {
     try {
       setLoading(true);
@@ -34,7 +34,7 @@ export const useSurveyAssignments = () => {
     }
   };
 
-  // Function to fetch all patients assigned to a particular survey
+  
   const fetchAssignedPatientsForSurvey = async (surveyId: number) => {
     try {
       setLoading(true);
@@ -47,11 +47,11 @@ export const useSurveyAssignments = () => {
     }
   };
 
-  // New function to fetch all patients with their assignment status for a specific survey
+  
   const fetchAllPatientsWithSurveyStatus = async (surveyId: number) => {
     try {
       setLoading(true);
-      const response = await api.get(`/assignments/patients/${surveyId}`); // Assuming the API endpoint accepts surveyId as a parameter
+      const response = await api.get(`/assignments/patients/${surveyId}`); 
       setAllPatients(response.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch all patients');
@@ -64,10 +64,10 @@ export const useSurveyAssignments = () => {
     assignSurveyToPatient,
     fetchAssignedSurveysForPatient,
     fetchAssignedPatientsForSurvey,
-    fetchAllPatientsWithSurveyStatus, // Add this function to the return object
+    fetchAllPatientsWithSurveyStatus, 
     assignedSurveys,
     assignedPatients,
-    allPatients, // Include the new state for all patients
+    allPatients, 
     loading,
     error,
   };

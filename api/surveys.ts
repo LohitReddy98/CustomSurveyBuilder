@@ -1,4 +1,4 @@
-// api/surveys.ts
+
 import { Survey, SurveyResponse } from '../types';
 import { mockSurveys, } from '../data/mockSurveys';
 import { mockSurveyAssignments } from '@/data/mockSurveyAssignments';
@@ -6,8 +6,8 @@ import { mockSurveyResponses } from '@/data/mockSurveyResponses';
 
 
 let surveys: Survey[] = [...mockSurveys];
-let surveyAssignments: { surveyId: number; patientId: number }[] = [...mockSurveyAssignments]; // Initialize with mock assignments
-let surveyResponses: SurveyResponse[] = [...mockSurveyResponses]; // Initialize with mock survey responses
+let surveyAssignments: { surveyId: number; patientId: number }[] = [...mockSurveyAssignments]; 
+let surveyResponses: SurveyResponse[] = [...mockSurveyResponses]; 
 
 export const getSurveys = (): Promise<Survey[]> => {
   return new Promise((resolve) => {
@@ -49,7 +49,7 @@ export const deleteSurvey = (id: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       surveys = surveys.filter((survey) => survey.id !== id);
-      // Remove any assignments and responses associated with the survey
+      
       surveyAssignments = surveyAssignments.filter((assignment) => assignment.surveyId !== id);
       surveyResponses = surveyResponses.filter((response) => response.surveyId !== id);
       resolve();

@@ -1,31 +1,30 @@
-// app/survey-responses/index.tsx
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { Survey } from '../../../types';
-import { getSurveyById, getSurveyResponses } from '../../../api/surveys';
 import globalStyles from '@/styles/globalStyles';
+import { useSurveys } from '@/api/hooks/useSurvey';
+import { useSurveyResponses } from '@/api/hooks/useSurveyResponses';
 
 export default function SurveyResponsesScreen() {
   const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
-  const [survey, setSurvey] = useState<Survey | null>(null);
-  const [responses, setResponses] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  
+  const { getSurveyById, currentSurvey, loading: surveyLoading } = useSurveys();
+  const {
+    getResponsesForSurvey,
+    responses,
+    loading: responsesLoading,
+    error,
+  } = useSurveyResponses();
 
   useEffect(() => {
-    fetchSurveyData();
+    if (surveyId) {
+      getSurveyById(Number(surveyId));
+      getResponsesForSurvey(Number(surveyId));
+    }
   }, [surveyId]);
 
-  const fetchSurveyData = async () => {
-    setLoading(true);
-    const surveyData = await getSurveyById(Number(surveyId));
-    const responseData = await getSurveyResponses(Number(surveyId));
-    setSurvey(surveyData || null);
-    setResponses(responseData || []);
-    setLoading(false);
-  };
-
-  if (loading) {
+  if (surveyLoading || responsesLoading) {
     return (
       <View style={globalStyles.container}>
         <ActivityIndicator size="large" />
@@ -33,7 +32,7 @@ export default function SurveyResponsesScreen() {
     );
   }
 
-  if (!survey) {
+  if (!currentSurvey) {
     return (
       <View style={globalStyles.container}>
         <Text>Survey not found</Text>
@@ -41,21 +40,63 @@ export default function SurveyResponsesScreen() {
     );
   }
 
+  if (error) {
+    return (
+      <View style={globalStyles.container}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Responses for: {survey.title}</Text>
-      {responses.map((response) => (
-        <View key={response.id} style={{ marginBottom: 20 }}>
-          <Text style={{ fontWeight: 'bold' }}>
-            {response.patientName}
-          </Text>
-          {response.answers.map((answer : any, idx: any) => (
-            <Text key={idx}>
-              {survey.questions.find((q) => q.id === answer.questionId)?.text}: {answer.answer}
+      <Text style={globalStyles.title}>Responses for: {currentSurvey.title}</Text>
+      {responses.length === 0 ? (
+        <Text>No responses yet.</Text>
+      ) : (
+        responses.map((response: any) => (
+          <View key={response.id} style={styles.responseContainer}>
+            <Text style={styles.patientName}>
+              {response.Patient?.User?.username || 'Unknown'} ({response.Patient?.User?.email})
             </Text>
-          ))}
-        </View>
-      ))}
+            {Object.entries(response.response).map(([questionId, answer]: [string, any]) => {
+              const question = currentSurvey.questions.find((q: any) => q.questionId === Number(questionId));
+              return (
+                <View key={questionId} style={styles.answerContainer}>
+                  <Text style={styles.questionText}>
+                    {question ? question.questionText : `Question ID: ${questionId}`}:
+                  </Text>
+                  <Text style={styles.answerText}>{answer}</Text>
+                </View>
+              );
+            })}
+          </View>
+        ))
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  responseContainer: {
+    marginBottom: 20,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+  },
+  patientName: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  answerContainer: {
+    marginBottom: 5,
+  },
+  questionText: {
+    fontWeight: '600',
+  },
+  answerText: {
+    marginLeft: 10,
+  },
+});

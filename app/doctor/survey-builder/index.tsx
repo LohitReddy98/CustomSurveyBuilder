@@ -1,8 +1,8 @@
-// app/doctor/survey-builder/index.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Button, Text, ActivityIndicator, ScrollView } from 'react-native';
+import { View, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { Formik, FieldArray } from 'formik';
-import TextInputComponent from '../../../components/common/TextInput';
+import { Button, TextInput, Text, Divider, Checkbox } from 'react-native-paper';
+import * as Yup from 'yup';
 import MultipleChoiceQuestion from '../../../components/questions/MultipleChoiceQuestion';
 import ShortAnswerQuestion from '../../../components/questions/ShortAnswerQuestion';
 import RatingScaleQuestion from '@/components/questions/RatingScaleQuestion';
@@ -15,9 +15,9 @@ import { useSurveys } from '@/api/hooks/useSurvey';
 export default function SurveyBuilderScreen() {
   const router = useRouter();
   const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
-  const { createSurvey, getSurveyById, currentSurvey, setCurrentSurvey, loading } = useSurveys(); // Destructure needed values and methods from the hook
+  const { createSurvey, getSurveyById, setCurrentSurvey, loading } = useSurveys();
   const [initialValues, setInitialValues] = useState<Survey | null>(null);
-  const [isEditMode, setIsEditMode] = useState(true); // Control edit mode
+  const [isEditMode] = useState(true); 
 
   useEffect(() => {
     if (surveyId) {
@@ -43,18 +43,17 @@ export default function SurveyBuilderScreen() {
       });
     }
   };
-  //useeffect to debug formik values
- 
+
   const handleSubmit = async (values: Survey) => {
     try {
       if (surveyId) {
-        setCurrentSurvey(values); // Directly update the current survey state in the hook
+        setCurrentSurvey(values);
       } else {
         await createSurvey(values);
       }
       router.back();
     } finally {
-      // Handle any additional logic post-submit if needed
+      
     }
   };
 
@@ -66,72 +65,133 @@ export default function SurveyBuilderScreen() {
     );
   }
 
+  
+  const getQuestionSchema = (questionType:any) => {
+    switch (questionType) {
+      case 'MULTIPLE_CHOICE':
+        return Yup.object().shape({
+          questionText: Yup.string().required('Question text is required'),
+          options: Yup.array()
+            .of(
+              Yup.string().required('Each option must have text')
+            )
+            .min(1, 'Multiple choice questions must have at least one option')
+            .required('Options are required for multiple choice questions'),
+        });
+      case 'SHORT_ANSWER':
+        return Yup.object().shape({
+          questionText: Yup.string().required('Question text is required'),
+        });
+      case 'RATING_SCALE':
+        return Yup.object().shape({
+          questionText: Yup.string().required('Question text is required'),
+        });
+      default:
+        return Yup.object().shape({
+          questionText: Yup.string().required('Question text is required'),
+        });
+    }
+  };
+  
+  
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required('Survey title is required'),
+    questions: Yup.array().of(
+      Yup.lazy((question) =>
+        getQuestionSchema(question?.questionType || 'SHORT_ANSWER')
+      )
+    ).min(1, 'Survey must have at least one question'),
+  });
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      enableReinitialize // Reinitialize form when initialValues change
+      enableReinitialize
+      validationSchema={validationSchema}
+      validateOnChange={false}
+      validateOnBlur={false} 
     >
-      {({ handleSubmit, values, errors, touched, setFieldValue }) => {
+      {({ handleSubmit, values, errors, touched, setFieldValue }) => (
+        <ScrollView contentContainerStyle={[globalStyles.container, styles.container]}>
+          <Text style={styles.title}>Survey Builder</Text>
 
-        return (
-        <ScrollView contentContainerStyle={globalStyles.container}>
-          <Text style={globalStyles.title}>Survey Builder</Text>
-          {/* Survey Title Input */}
-          {isEditMode && ( // Only show the title input in edit mode
-            <TextInputComponent
-              placeholder="Survey Title"
+          {isEditMode && (
+            <TextInput
+              label="Survey Title"
               value={values.title}
               onChangeText={(text) => setFieldValue('title', text)}
+              mode="outlined"
+              style={styles.textInput}
             />
           )}
           {errors.title && touched.title && (
-            <Text style={{ color: 'red', marginBottom: 10 }}>{errors.title}</Text>
+            <Text style={styles.errorText}>{errors.title}</Text>
           )}
 
-          {/* Questions List */}
           <FieldArray
             name="questions"
             render={(arrayHelpers) => (
               <View>
                 {values.questions.map((question, index) => (
-                  <View key={`question-${index}`} style={{ marginBottom: 20 }}>
-                    {/* Render the appropriate question type component with isEditMode prop */}
+                  <View key={`question-${index}`} style={styles.questionContainer}>
+                    {}
                     {question.questionType === 'MULTIPLE_CHOICE' ? (
                       <MultipleChoiceQuestion
                         questionIndex={index}
                         arrayHelpers={arrayHelpers}
-                        isEditMode={isEditMode} // Pass isEditMode prop
+                        isEditMode={isEditMode}
                       />
                     ) : question.questionType === 'SHORT_ANSWER' ? (
                       <ShortAnswerQuestion
                         questionIndex={index}
-                        isEditMode={isEditMode} // Pass isEditMode prop
+                        isEditMode={isEditMode}
                       />
                     ) : question.questionType === 'RATING_SCALE' ? (
                       <RatingScaleQuestion
-                        key={`question-${index}`}
                         questionIndex={index}
-                        isEditMode={isEditMode} // Pass isEditMode prop
+                        isEditMode={isEditMode}
                       />
                     ) : null}
 
-                    {/* Remove Question Button - only show in edit mode */}
+                    {errors.questions?.[index]?.questionText && touched.questions?.[index]?.questionText && (
+                      <Text style={styles.errorText}>{errors.questions[index].questionText}</Text>
+                    )}
+
+                    {}
+                    {question.questionType === 'MULTIPLE_CHOICE' && errors.questions?.[index]?.options && (
+                      <Text style={styles.errorText}>{errors.questions[index].options}</Text>
+                    )}
+
+                    {}
+                    {isEditMode && (
+                      <View style={styles.requiredCheckboxContainer}>
+                        <Checkbox
+                          status={question.isRequired ? 'checked' : 'unchecked'}
+                          onPress={() => setFieldValue(`questions.${index}.isRequired`, !question.isRequired)}
+                        />
+                        <Text>Required</Text>
+                      </View>
+                    )}
+
                     {isEditMode && (
                       <Button
-                        title="Remove Question"
-                        color="red"
+                        mode="text"
                         onPress={() => arrayHelpers.remove(index)}
-                      />
+                        color="red"
+                        style={styles.removeButton}
+                      >
+                        Remove Question
+                      </Button>
                     )}
+                    <Divider style={styles.divider} />
                   </View>
                 ))}
 
-                {/* Buttons to Add Questions - only show in edit mode */}
                 {isEditMode && (
-                  <>
+                  <View style={styles.addButtonContainer}>
                     <Button
-                      title="Add Multiple Choice Question"
+                      mode="outlined"
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
@@ -141,9 +201,12 @@ export default function SurveyBuilderScreen() {
                           isRequired: false,
                         })
                       }
-                    />
+                      style={styles.addButton}
+                    >
+                      Add Multiple Choice Question
+                    </Button>
                     <Button
-                      title="Add Short Answer Question"
+                      mode="outlined"
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
@@ -152,9 +215,12 @@ export default function SurveyBuilderScreen() {
                           isRequired: false,
                         })
                       }
-                    />
+                      style={styles.addButton}
+                    >
+                      Add Short Answer Question
+                    </Button>
                     <Button
-                      title="Add Rating Scale Question"
+                      mode="outlined"
                       onPress={() =>
                         arrayHelpers.push({
                           id: generateUniqueId(),
@@ -163,17 +229,71 @@ export default function SurveyBuilderScreen() {
                           isRequired: false,
                         })
                       }
-                    />
-                  </>
+                      style={styles.addButton}
+                    >
+                      Add Rating Scale Question
+                    </Button>
+                  </View>
                 )}
               </View>
             )}
           />
 
-          {/* Save Survey Button */}
-          <Button title="Save Survey" onPress={() => handleSubmit()} />
+          <Button
+            mode="contained"
+            onPress={() => handleSubmit()}
+            style={styles.saveButton}
+          >
+            Save Survey
+          </Button>
         </ScrollView>
-      )}}
+      )}
     </Formik>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  textInput: {
+    marginBottom: 10,
+    backgroundColor: '#fff',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  questionContainer: {
+    marginBottom: 20,
+  },
+  removeButton: {
+    alignSelf: 'flex-end',
+    marginTop: -10,
+  },
+  divider: {
+    marginVertical: 10,
+  },
+  addButtonContainer: {
+    marginVertical: 20,
+  },
+  addButton: {
+    marginVertical: 5,
+  },
+  saveButton: {
+    marginTop: 20,
+  },
+  requiredCheckboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+});
+

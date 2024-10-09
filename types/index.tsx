@@ -1,4 +1,4 @@
-// types/index.ts
+
 export interface QuestionBase {
   id: number;
   questionType: 'MULTIPLE_CHOICE' | 'SHORT_ANSWER' | 'RATING_SCALE';
@@ -25,20 +25,20 @@ export type Question =
   | RatingScaleQuestion;
 
   export type SurveyQuestion = {
-    questionId: number | string; // String for new questions created on the frontend, number for existing questions from the backend
-    surveyId: number; // Reference to the parent survey's ID
+    questionId: number | string; 
+    surveyId: number; 
     questionText: string;
     questionType: 'MULTIPLE_CHOICE' | 'SHORT_ANSWER' | 'RATING_SCALE';
-    options?: string[]; // Options for multiple-choice questions
+    options?: string[]; 
     isRequired: boolean;
   };
   
   export type Survey = {
-    id: number | string; // String for new surveys created on the frontend, number for existing surveys from the backend
+    id: number | string; 
     title: string;
     description?: string;
     questions: SurveyQuestion[];
-    createdBy?: number; // ID of the doctor who created the survey
+    createdBy?: number; 
   };
 
 export interface Patient {

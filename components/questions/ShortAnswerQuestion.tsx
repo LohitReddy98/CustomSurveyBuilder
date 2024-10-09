@@ -1,4 +1,4 @@
-// components/questions/ShortAnswerQuestion.tsx
+
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
@@ -7,7 +7,7 @@ import TextInputComponent from '../common/TextInput';
 
 interface ShortAnswerQuestionProps {
   questionIndex: number;
-  isEditMode?: boolean; // New prop to control edit/view mode
+  isEditMode?: boolean; 
 }
 
 const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
@@ -18,7 +18,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
 
   return (
     <View style={styles.questionContainer}>
-      {/* Show TextInput for question text only in edit mode */}
+      {}
       {isEditMode ? (
         <TextInputComponent
           placeholder="Question Text"
@@ -30,7 +30,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
         <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
-      {/* Show a placeholder for the short answer when not in edit mode */}
+      {}
       {!isEditMode && (
         <View style={styles.answerPlaceholderContainer}>
           <Text style={styles.answerPlaceholderText}>Short Answer Text</Text>
@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
-    backgroundColor: '#f9f9f9',
   },
   textInput: {
     marginBottom: 15,
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#e9e9e9',
   },
   answerPlaceholderText: {
     fontSize: 16,

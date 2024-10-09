@@ -1,27 +1,35 @@
-// app/doctor/survey-assignment/index.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import colors from '../../../styles/colors';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import globalStyles from '@/styles/globalStyles';
 import { useSurveyAssignments } from '@/api/hooks/useSurveyAssignments';
 
 export default function SurveyAssignmentScreen() {
-  const { surveyId } = useLocalSearchParams<{ surveyId?: string }>(); // Get surveyId from params
-  const { fetchAllPatientsWithSurveyStatus, assignSurveyToPatient, allPatients, loading, error } = useSurveyAssignments(); // Use hook
-  const router = useRouter();
+  const { surveyId } = useLocalSearchParams<{ surveyId?: string }>();
+  const { fetchAllPatientsWithSurveyStatus, assignSurveyToPatient, allPatients, loading, error } = useSurveyAssignments();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPatients, setFilteredPatients] = useState([]);
 
   useEffect(() => {
     if (surveyId) {
-      fetchAllPatientsWithSurveyStatus(Number(surveyId)); // Fetch patients when surveyId is available
+      fetchAllPatientsWithSurveyStatus(Number(surveyId));
     }
   }, [surveyId]);
 
-  // Function to handle assigning the survey to a patient
+  useEffect(() => {
+    setFilteredPatients(
+      allPatients.filter((patient) =>
+        `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, allPatients]);
+
   const handleAssign = async (patientId: number) => {
     if (surveyId) {
       await assignSurveyToPatient(Number(surveyId), patientId);
-      await fetchAllPatientsWithSurveyStatus(Number(surveyId)); // Refresh the patient list after assignment
+      await fetchAllPatientsWithSurveyStatus(Number(surveyId));
     }
   };
 
@@ -43,9 +51,16 @@ export default function SurveyAssignmentScreen() {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Patients for Survey: {surveyId}</Text>
+      <Text style={globalStyles.title}>Assign Survey: {surveyId}</Text>
+      <TextInput
+        placeholder="Search Patients"
+        value={searchQuery}
+        onChangeText={(text) => setSearchQuery(text)}
+        style={styles.searchInput}
+        mode="outlined"
+      />
       <FlatList
-        data={allPatients}
+        data={filteredPatients}
         keyExtractor={(item) => item.patientId.toString()}
         renderItem={({ item }) => (
           <View style={styles.patientItem}>
@@ -70,6 +85,10 @@ export default function SurveyAssignmentScreen() {
 }
 
 const styles = StyleSheet.create({
+  searchInput: {
+    marginVertical: 10,
+    backgroundColor: '#fff',
+  },
   patientItem: {
     padding: 15,
     borderBottomWidth: 1,

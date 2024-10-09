@@ -1,26 +1,23 @@
-// app/patient/surveys/index.tsx
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import globalStyles from '../../../styles/globalStyles';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Survey } from '../../../types';
-import { useSurveyAssignments } from '../../../api/hooks/useSurveyAssignments'; // Import the hook
+import { useRouter } from 'expo-router';
+import { useSurveyAssignments } from '../../../api/hooks/useSurveyAssignments';
 
 export default function PatientSurveysScreen() {
   const router = useRouter();
-  const { fetchAssignedSurveysForPatient, assignedSurveys, loading, error } = useSurveyAssignments(); // Use the hook
+  const { fetchAssignedSurveysForPatient, assignedSurveys, loading, error } = useSurveyAssignments();
 
   useEffect(() => {
-      fetchAssignedSurveysForPatient(); // Fetch surveys assigned to the currently logged-in patient
-    
+    fetchAssignedSurveysForPatient();
   }, []);
-  useEffect(() => {
-    console.log(assignedSurveys);
-  }
-  , [assignedSurveys]);
 
   const handleSurveyPress = (survey: any) => {
-    router.push(`/patient/survey-view/${survey.surveyId}`); 
+    if (!survey.submitted) {
+      router.push(`/patient/survey-view/${survey.surveyId}`);
+    }
   };
 
   if (loading) {
@@ -44,16 +41,36 @@ export default function PatientSurveysScreen() {
       <Text style={globalStyles.title}>Assigned Surveys</Text>
       <FlatList
         data={assignedSurveys}
-        keyExtractor={(item) => item.surveyId ? item.surveyId.toString() : Math.random().toString()}
+        keyExtractor={(item) => item.surveyId?.toString() || Math.random().toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => handleSurveyPress(item)}
-            style={{ padding: 15, borderBottomWidth: 1 }}
-          >
-            <Text>{item.title}</Text>
-          </TouchableOpacity>
+          <View style={styles.surveyItem}>
+            <Text style={styles.surveyTitle}>{item.title}</Text>
+            <Button
+              mode="contained"
+              onPress={() => handleSurveyPress(item)}
+              style={styles.startButton}
+              disabled={item.submitted}
+            >
+              {item.submitted ? 'Completed' : 'Start Survey'}
+            </Button>
+          </View>
         )}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  surveyItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  surveyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  startButton: {
+    marginTop: 10,
+  },
+});

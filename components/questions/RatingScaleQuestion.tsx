@@ -1,4 +1,4 @@
-// components/questions/RatingScaleQuestion.tsx
+
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
@@ -7,10 +7,10 @@ import TextInputComponent from '../common/TextInput';
 
 interface RatingScaleQuestionProps {
   questionIndex: number;
-  isEditMode?: boolean; // New prop to determine if we're in edit mode
+  isEditMode?: boolean; 
 }
 
-const RATING_OPTIONS = [1, 2, 3, 4, 5]; // Define the rating scale options
+const RATING_OPTIONS = [1, 2, 3, 4, 5]; 
 
 const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex, isEditMode=true }) => {
   const { values, setFieldValue } = useFormikContext<any>();
@@ -22,7 +22,7 @@ const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex
   return (
     <View style={styles.container}>
       {isEditMode ? (
-        // Editable Text Input for Question Text in Edit Mode
+        
         <TextInputComponent
           placeholder="Enter your question here"
           value={values.questions[questionIndex].questionText}
@@ -30,11 +30,11 @@ const RatingScaleQuestion: React.FC<RatingScaleQuestionProps> = ({ questionIndex
           style={styles.textInput}
         />
       ) : (
-        // Display Question Text when filling out the survey
+        
         <Text style={styles.questionText}>{values.questions[questionIndex].questionText}</Text>
       )}
 
-      {/* Render rating options only in view mode */}
+      {}
       {!isEditMode && (
         <View style={styles.ratingContainer}>
           {RATING_OPTIONS.map((option) => (
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
-    backgroundColor: '#f9f9f9',
   },
   textInput: {
     borderWidth: 1,

@@ -1,11 +1,7 @@
-// components/SurveyListItem.tsx
+
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text, Button } from 'react-native-paper';
 import colors from '../styles/colors';
 import { Survey } from '../types';
 
@@ -26,15 +22,15 @@ const SurveyListItem: React.FC<SurveyListItemProps> = ({
     <View style={styles.container}>
       <Text style={styles.title}>{survey.title}</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={onDelete} style={styles.button}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onAssign} style={styles.button}>
-          <Text style={styles.buttonText}>Assign</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onViewResponses} style={styles.button}>
-          <Text style={styles.buttonText}>View Responses</Text>
-        </TouchableOpacity>
+        <Button mode="outlined" onPress={onDelete} style={styles.button}>
+          Delete
+        </Button>
+        <Button mode="outlined" onPress={onAssign} style={styles.button}>
+          Assign
+        </Button>
+        <Button mode="outlined" onPress={onViewResponses} style={styles.button}>
+          View Responses
+        </Button>
       </View>
     </View>
   );
@@ -56,13 +52,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   button: {
-    marginRight: 10,
     marginTop: 5,
-  },
-  buttonText: {
-    color: colors.primary,
+    flex: 1,
+    marginHorizontal: 5,
   },
 });
 

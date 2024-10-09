@@ -1,4 +1,4 @@
-// utils/validationSchema.ts
+
 import * as Yup from 'yup';
 
 export const surveyValidationSchema = Yup.object().shape({
